@@ -1,1 +1,2 @@
-Hello World!
+R3PO (ROS-based Remote Robot Programming and Operation) is an initiative to add the flexibility and power of writing ROS code in an Internet browser and running it in the remote robot with a single click. The code is executed in the robot server at full speed, i.e. without any communication delay, and the output of the process is returned back to the programmer. All the information about the execution, stored in ROS topics, can be readily available for downloading from the server for further analysis. Built upon Robot Web Tools, R3PO works out-of-the-box in any ROS-based robot or simulator.
+
