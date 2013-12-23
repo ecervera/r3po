@@ -16,9 +16,13 @@ var Turtle = (function() {
 		that.trailX = new Array();
 		that.trailY = new Array();
 		
+    var turtle_names = ['diamondback.png', 'fuerte.png', 'robot-turtle.png', 'turtle.png', 'box-turtle.png', 'electric.png', 'groovy.png', 'sea-turtle.png'];
+    var randomIndex = Math.floor(Math.random() * turtle_names.length);
+    var randomTurtle = turtle_names[randomIndex];
+
     // Represents the turtle as a PNG image.
     that.image = new Image();
-    that.image.src = 'images/robot-turtle.png';
+    that.image.src = 'images/'+randomTurtle;
     that.draw();
 		
 		that.listener = new ROSLIB.Topic({
