@@ -20,9 +20,7 @@
 	
 	<script>
 
-	//var hostIP = 'robotprogramming.uji.es'; 
-	var hostIP = '172.16.122.147'; 
-	var rosURL = 'ws://'+hostIP+':9090';
+	var rosURL = 'ws://'+location.hostname+':9090';
 	var turtleName = '';
 
 	var ros = new ROSLIB.Ros({
