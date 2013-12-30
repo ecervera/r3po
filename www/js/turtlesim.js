@@ -20,13 +20,18 @@ var TurtleSim = (function() {
       name    : name,
       ros     : that.ros,
       pose    : initialPose,
-      context : that.context
+      context : that.context,
+			r : 255,
+			g : 255,
+			b : 255,
+			width : 2,
+			off : 0
     });
 
   };
 
   TurtleSim.prototype.draw = function() {
-    this.context.fillStyle = "BLUE"
+    this.context.fillStyle = "rgb(69,86,255)"
     this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
     this.turtle.draw();
   };

@@ -129,7 +129,7 @@
 		  var goal = new ROSLIB.Goal({
 			actionClient : runscClient,
 			goalMessage : {
-				name : turtleName,
+				name : 'simple'+turtleName,
 				code : myCodeMirror.getValue(),
 				withBag : false,
 				param : turtleName
@@ -162,6 +162,31 @@
 		turtleSim.draw();	
 	});
 
+	$( "#restartTurtle" ).button();
+	$( "#restartTurtle" ).on( "click", function( event, ui ) {
+		var resetTurtle = new ROSLIB.Service({
+			ros : ros,
+			name : '/'+turtleName+'/teleport_absolute',
+			serviceType : 'turtlesim/TeleportAbsolute'
+		});
+	
+		var request = new ROSLIB.ServiceRequest({
+			x : 5.5,
+			y : 5.5,
+			theta : 0
+		});
+	
+		resetTurtle.callService(request, function(){	
+			turtleSim.turtle.trailX = new Array();
+			turtleSim.turtle.trailY = new Array();
+			turtleSim.turtle.trailR = new Array();
+			turtleSim.turtle.trailG = new Array();
+			turtleSim.turtle.trailB = new Array();
+			turtleSim.turtle.trailW = new Array();
+			turtleSim.draw();	
+		});
+	});
+
 });
 
 
@@ -182,11 +207,9 @@
 				<canvas id="world" width="296" height="296" style="border: 0px"></canvas>
 			</td>
 			<td bgcolor="#000000" >
-<textarea  rows="30" cols="80" id="moduleCode">
+<textarea  rows="30" cols="50" id="moduleCode">
 #!/usr/bin/env python
-
 from rpn.turtle import *
-
 start()
 
 # Write your commands here
@@ -196,12 +219,22 @@ start()
 		</tr>
 		<tr>
 			<td align="center">
+			<table>
+			<tr>
+			<td align="right">
 			<div id="moduleRun">Run</div>
+			</td><td align="left">
 			<div id="moduleStop">Stop</div>
+			</td></tr>
+			<tr><td align="right">
 			<div id="clearBackground">Clear</div>
+			</td><td align="left">
+			<div id="restartTurtle">Reset</div>
+			</td></tr>
+			</table>
 		</td>
 		<td >Output:<br>
-			<textarea readonly rows="5" cols="80" style="overflow:auto;resize:vertical" id="moduleOutput"></textarea>
+			<textarea readonly rows="5" cols="50" style="overflow:auto;resize:vertical" id="moduleOutput"></textarea>
 	</td>
 	</tr>
 	<tr>

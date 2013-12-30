@@ -17,6 +17,11 @@ def terminate_process_and_children(p):
             os.kill(int(pid_str), signal.SIGINT)
     p.terminate()
     
+def change_user():
+	#os.setgid(65534)
+	#os.setuid(65534)
+	pass
+
 class TurtleServer:
   def __init__(self):
     self.server = actionlib.ActionServer('turtlesim_run_script', RunScriptAction, self.execute, self.cancel, False)
@@ -58,6 +63,7 @@ class TurtleServer:
         self.pm[turtle] = subprocess.Popen('rosrun r3po sandbox/turtlesim/' + modulename+'.py',
                                 stdout=text_file,
                                 stderr=subprocess.STDOUT,
+                                preexec_fn=change_user,
                                 env=my_env,
                                 shell=True)
     self.cancelled[turtle] = False
