@@ -37,8 +37,6 @@ var StageBot = (function() {
 		});
 		
 		that.poseListener.subscribe(function(message) {
-			//that.x = message.x * that.context.canvas.width / 11.08;
-			//that.y = that.context.canvas.height - message.y * that.context.canvas.height / 11.08;
 			that.x = message.x;
 			that.y = message.y;
 			that.th = message.theta;
@@ -61,6 +59,7 @@ var StageBot = (function() {
 	
 	StageBot.prototype.draw = function() {
 		
+		this.context.clearRect(0,0,this.context.canvas.width,this.context.canvas.height);
 		var bw = this.background.width;
 		var bh = this.background.height;
 		var cw = this.context.canvas.width; // square canvas, width=height
@@ -74,23 +73,20 @@ var StageBot = (function() {
 		
 		this.context.save();
 		if ((x!=null)&&(x!=null)) {
-			//var imageWidth  = this.image.width;
-			//var imageHeight = this.image.height;
 			var imageWidth  = 0.25/mpix;
 			var imageHeight = 0.25/mpix;
 			this.context.translate(x, y);
 			this.context.rotate(-this.th);
 			if (this.ranger!=null) {
 				var ctx = this.context;
-// 				ctx.beginPath();
-// 				ctx.moveTo(0,0);
-// 				ctx.lineTo(0,this.ranger[0]/mpix);
-// 				ctx.stroke();
 				for (var i=0;i<12;i++) {
 					ctx.beginPath();
+					ctx.fillStyle="rgba(136, 255, 255, 0.5)";
 					ctx.moveTo(0,0);
+					ctx.lineTo(Math.sin(i*Math.PI/6-Math.PI/36)*this.ranger[i]/mpix,Math.cos(i*Math.PI/6-Math.PI/36)*this.ranger[i]/mpix);
 					ctx.lineTo(Math.sin(i*Math.PI/6)*this.ranger[i]/mpix,Math.cos(i*Math.PI/6)*this.ranger[i]/mpix);
-					ctx.stroke();
+					ctx.lineTo(Math.sin(i*Math.PI/6+Math.PI/36)*this.ranger[i]/mpix,Math.cos(i*Math.PI/6+Math.PI/36)*this.ranger[i]/mpix);
+					ctx.fill();
 				}
 			}
 			this.context.drawImage(
@@ -103,7 +99,6 @@ var StageBot = (function() {
 		}
 		this.context.restore();
 	};
-
 	return StageBot;
 }());
 
