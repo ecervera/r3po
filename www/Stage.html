@@ -27,24 +27,24 @@
 		url : rosURL
 	});
 		
-// 	window.onbeforeunload=function(){
-// 		var killBot = new ROSLIB.Service({
-// 			ros : ros,
-// 			name : '/kill',
-// 			serviceType : 'stagesim/Kill'
-// 		});
-// 		var request = new ROSLIB.ServiceRequest({
-// 			name : botName
-// 		});
-// 		killBot.callService(request, function(){});
-// 		
-// 		var stopBotRecord = new ROSLIB.Service({
-// 			ros : ros,
-// 			name : '/bot_recorder/stop',
-// 			serviceType : 'r3po/BotStopRecord'
-// 		});
-// 		stopBotRecord.callService(request, function(result){});
-// 	};
+	window.onbeforeunload=function(){
+		var killBot = new ROSLIB.Service({
+			ros : ros,
+			name : '/stage_scheduler/release',
+			serviceType : 'r3po/Release'
+		});
+		var request = new ROSLIB.ServiceRequest({
+			name : botName
+		});
+		killBot.callService(request, function(){});
+		
+		var stopBotRecord = new ROSLIB.Service({
+			ros : ros,
+			name : '/stage_recorder/stop',
+			serviceType : 'r3po/BotStopRecord'
+		});
+		stopBotRecord.callService(request, function(result){});
+	};
 		
 	$(document).ready(function(){
 		var context = document.getElementById('world').getContext('2d');
@@ -55,35 +55,36 @@
 			background : 'images/lab.png'
 		});
 
-// 		var spawnBot = new ROSLIB.Service({
-// 			ros : ros,
-// 			name : '/spawn',
-// 			serviceType : 'stagesim/Spawn'
-// 		});
-// 	
-// 		var request = new ROSLIB.ServiceRequest({
-// 			name : 'lab.world'
-// 		});
-// 	
-// 		spawnBot.callService(request, function(result){
-// 			botName = result.name;
-// 			stageSim.spawnBot(botName);
-// 			stageSim.draw();			
-// 			
-// 			var startBotRecord = new ROSLIB.Service({
-// 				ros : ros,
-// 				name : '/bot_recorder/start',
-// 				serviceType : 'r3po/BotStartRecord'
-// 			});
-// 			var reqrec = new ROSLIB.ServiceRequest({
-// 				name : botName
-// 			});
-// 			startBotRecord.callService(reqrec, function(result){
-// 			});
-// 		});
-		botName = 'stage15';
-		stageSim.spawnBot(botName);
-    
+		var spawnBot = new ROSLIB.Service({
+			ros : ros,
+			name : '/stage_scheduler/acquire',
+			serviceType : 'r3po/Acquire'
+		});
+	
+		var request = new ROSLIB.ServiceRequest({
+		});
+	
+		spawnBot.callService(request, function(result){
+			botName = result.name;
+			
+			if (!botName.length) {
+				$( "div#botAcquired" ).text('No available robot, please come back in a few minutes...');
+			}
+			stageSim.spawnBot(botName);
+			$( "div#botAcquired" ).text('Controlling robot '+botName);
+			
+			var startBotRecord = new ROSLIB.Service({
+				ros : ros,
+				name : '/stage_recorder/start',
+				serviceType : 'r3po/BotStartRecord'
+			});
+			var reqrec = new ROSLIB.ServiceRequest({
+				name : botName
+			});
+			startBotRecord.callService(reqrec, function(result){
+			});
+		});
+
 		var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("moduleCode"),{
 			lineNumbers : true
 		});
@@ -120,6 +121,7 @@
 				goalMessage : {
 					name : botName,
 					code : myCodeMirror.getValue(),
+					param : botName
 				}
 			});
 			goal.on('feedback', function(feedback) {});
@@ -163,7 +165,7 @@ import rospy
 from geometry_msgs.msg import Twist
 rospy.init_node('robot_mover',anonymous=True)
 
-pub = rospy.Publisher('stage15/cmd_vel', Twist)
+pub = rospy.Publisher('cmd_vel', Twist)
 rospy.sleep(0.1)
 
 twist = Twist()
@@ -188,6 +190,7 @@ for i in range(10):
 	</tr>
 	<tr>
 		<td align="center">
+			<div id="botAcquired"></div>
 		</td>
 		<td align="center">
 			<div id="clearOutput">Clear output</div>

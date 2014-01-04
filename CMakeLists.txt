@@ -58,6 +58,8 @@ add_message_files(
    TurtleStopRecord.srv
    BotStartRecord.srv
    BotStopRecord.srv
+   Acquire.srv
+   Release.srv
 )
 
 ## Generate actions in the 'action' folder
