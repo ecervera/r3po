@@ -1,0 +1,11 @@
+<launch>
+
+  <param name="/use_sim_time" value="false"/>
+
+  <node pkg="r3po" type="stage_server.py" name="stage_server"/>
+
+  <node pkg="r3po" type="stage_recorder.py" name="stage_recorder"/>
+
+  <node pkg="r3po" type="stage_scheduler.py" name="stage_scheduler"/>  
+  
+</launch>
