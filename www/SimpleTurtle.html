@@ -19,21 +19,28 @@
 	<script src="js/turtlesim.js"></script>
 	
 	<script>
+	
+	function getURLParameter(name) {
+		return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+	}
 
+	var user_id = getURLParameter('user_id');
+	var bagfile = '';
+	
 	var rosURL = 'ws://'+location.hostname+':9090';
 	var turtleName = '';
 
 	var ros = new ROSLIB.Ros({
 		url : rosURL
 	});
-		
+
 	window.onbeforeunload=function(){
 		var killTurtle = new ROSLIB.Service({
 			ros : ros,
 			name : '/kill',
 			serviceType : 'turtlesim/Kill'
 		});
-	
+
 		var request = new ROSLIB.ServiceRequest({
 			name : turtleName
 		});
@@ -52,7 +59,6 @@
 		});
 		stopTurtleRecord.callService(reqrec, function(result){
 		});
-
 	};
 		
 	$(document).ready(function(){
@@ -74,12 +80,12 @@
 			y : 5.5,
 			theta : 0
 		});
-	
+
 		spawnTurtle.callService(request, function(result){
 			turtleName = result.name;
-	    turtleSim.spawnTurtle(turtleName);
-	    turtleSim.draw();			
-			
+			turtleSim.spawnTurtle(turtleName);
+			turtleSim.draw();
+
 			var startTurtleRecord = new ROSLIB.Service({
 				ros : ros,
 				name : '/turtle_recorder/start',
@@ -90,10 +96,10 @@
 				name : turtleName
 			});
 			startTurtleRecord.callService(reqrec, function(result){
+				//console.log('Bagfile: '+result.filename);
+				bagfile = result.filename;
 			});
 		});
-
-
     
 	var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("moduleCode"),{
 		lineNumbers : true
@@ -107,7 +113,7 @@
 	
 	var runscServer  = '/turtlesim_run_script';
 	var runscAction  = '/r3po/RunScriptAction';
-  var runningGoal;
+	var runningGoal;
 	
 	var runscClient = new ROSLIB.ActionClient({
 		ros : ros,
@@ -129,10 +135,10 @@
 		  var goal = new ROSLIB.Goal({
 			actionClient : runscClient,
 			goalMessage : {
-				name : 'simple'+turtleName,
+				name : turtleName,
 				code : myCodeMirror.getValue(),
-				withBag : false,
-				param : turtleName
+				user_id : user_id,
+				bagfile : bagfile
 			}
 		});
 		goal.on('feedback', function(feedback) {});

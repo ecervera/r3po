@@ -15,15 +15,15 @@ def terminate_process_and_children(p):
     p.terminate()
 
 def handle_start(req):
-    print "Start recording " + req.name
+    rospy.loginfo("Start recording " + req.name)
     turtle = req.name
     modulename = turtle + '_' + time.strftime("%Y%m%d_%H%M%S", time.gmtime())
     filename = '/home/r3po/catkin_ws/src/r3po/sandbox/turtlesim/'+ modulename + '.bag'
     rosbag_proc[turtle] = subprocess.Popen(['/opt/ros/groovy/bin/rosbag','record','rosout',turtle+'/command_velocity',turtle+'/pose',turtle+'/pen','--duration', '1800', '-O',filename])
-    return 0
+    return TurtleStartRecordResponse(0,filename)
 
 def handle_stop(req):
-    print "Stop recording " + req.name
+    rospy.loginfo("Stop recording " + req.name)
     turtle = req.name 
     terminate_process_and_children(rosbag_proc[turtle])
     return 0
@@ -33,7 +33,6 @@ def turtle_recorder():
     rospy.init_node('turtle_recorder')
     sr = rospy.Service('~start', TurtleStartRecord, handle_start)
     sp = rospy.Service('~stop', TurtleStopRecord, handle_stop)
-    print "Ready for requests."
     rosbag_proc = {}
     rospy.spin()
 
