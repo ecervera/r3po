@@ -1,11 +1,20 @@
 #!/usr/bin/env python
 
-import math, rospy
+import math, rospy, random
 
 from std_srvs.srv import Empty as EmptyServiceCall
 from turtlesim.msg import Velocity
 from turtlesim.srv import TeleportAbsolute, TeleportRelative, SetPen
 from r3po.msg import Pen
+
+def dice():
+	return random.randint(1,6)
+
+Heads = 0
+Tails = 0
+
+def coin():
+	return random.choice([Heads,Tails])
 
 def sleep(t=1.0):
 	rospy.sleep(t)
