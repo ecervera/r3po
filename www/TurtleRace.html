@@ -25,6 +25,7 @@
 	}
 
 	var user_id = getURLParameter('user_id');
+	var bagfile = '';
 
 	var rosURL = 'ws://'+location.hostname+':9090';
 	var turtleName = '';
@@ -101,6 +102,7 @@
 				name : turtleName
 			});
 			startTurtleRecord.callService(reqrec, function(result){
+				bagfile = result.filename;
 			});
 		});
     
@@ -141,7 +143,8 @@
 			goalMessage : {
 				name : turtleName,
 				code : myCodeMirror.getValue(),
-				user_id : user_id
+				user_id : user_id,
+				bagfile : bagfile
 			}
 		});
 		goal.on('feedback', function(feedback) {});
@@ -216,7 +219,7 @@
 				<canvas id="world" width="296" height="296" style="border: 0px"></canvas>
 			</td>
 			<td bgcolor="#000000" >
-<textarea  rows="30" cols="80" id="moduleCode">
+<textarea  rows="30" cols="50" id="moduleCode">
 #!/usr/bin/env python
 
 from rpn.turtle import *
@@ -236,7 +239,7 @@ start()
 <div id="turtleGoal">Drive the turtle to the finish line!</div>
 		</td>
 		<td >Output:<br>
-			<textarea readonly rows="5" cols="80" style="overflow:auto;resize:vertical" id="moduleOutput"></textarea>
+			<textarea readonly rows="5" cols="50" style="overflow:auto;resize:vertical" id="moduleOutput"></textarea>
 	</td>
 	</tr>
 	<tr>
