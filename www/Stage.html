@@ -20,6 +20,12 @@
 	
 	<script>
 
+	function getURLParameter(name) {
+		return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+	}
+
+	var user_id = getURLParameter('user_id');
+
 	var rosURL = 'ws://'+location.hostname+':9090';
 	var botName = '';
 
@@ -94,17 +100,17 @@
 				myCodeMirror.setSize("100%", Math.max(248,$(this).height()));
 			}
 		});
-		
- 		var runscServer  = '/stage_run_script';
- 		var runscAction  = '/r3po/RunScriptAction';
- 		var runningGoal;
- 		
- 		var runscClient = new ROSLIB.ActionClient({
- 			ros : ros,
- 			serverName : runscServer,
- 			actionName : runscAction
- 		});
-		
+
+		var runscServer  = '/stage_run_script';
+		var runscAction  = '/r3po/RunScriptAction';
+		var runningGoal;
+ 
+		var runscClient = new ROSLIB.ActionClient({
+			ros : ros,
+			serverName : runscServer,
+			actionName : runscAction
+		});
+
 		$( "#moduleRun" ).button();
 		$( "#moduleStop" ).button();
 		$( "#moduleStop" ).button('disable');
@@ -112,7 +118,7 @@
 		$( "#moduleStop" ).on( "click", function( event, ui ) {
 			runningGoal.cancel();
 		} );
-		
+
 		$( "#moduleRun" ).on( "click", function( event, ui ) {
 			$( "#moduleRun" ).button('disable');
 			$( "#moduleStop" ).button('enable');
@@ -121,7 +127,7 @@
 				goalMessage : {
 					name : botName,
 					code : myCodeMirror.getValue(),
-					param : botName
+					user_id : user_id
 				}
 			});
 			goal.on('feedback', function(feedback) {});

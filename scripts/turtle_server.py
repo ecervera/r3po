@@ -5,8 +5,10 @@ import rospy
 import actionlib
 
 from r3po.msg import RunScriptAction, RunScriptResult
+from datetime import datetime
 
 import subprocess, os, signal, time
+import mysql.connector
 
 def terminate_process_and_children(p):
 	ps_command = subprocess.Popen("ps -o pid --ppid %d --noheaders" % p.pid, shell=True, stdout=subprocess.PIPE)
@@ -32,20 +34,25 @@ class TurtleServer:
 		self.executing = {}
 		self.filename = {}
 		self.result = {}
+		self.user_id = {}
+		self.bagfile = {}
+		self.start_time = {}
 		self.server.start()
 
 	def cancel(self, goalHandle):
 		goal = goalHandle.get_goal()
-		turtle = goal.param
+		turtle = goal.name
 		self.cancelled[turtle] = True
 		terminate_process_and_children(self.pm[turtle])
 		
 	def execute(self, goalHandle):
 		goal = goalHandle.get_goal()
-		turtle = goal.param
+		turtle = goal.name
 		self.goalHandle[turtle] = goalHandle
 		self.goal[turtle] = goal
-		modulename = goal.name + '_' + time.strftime("%Y%m%d_%H%M%S", time.gmtime())
+		self.user_id[turtle] = goal.user_id
+		self.bagfile[turtle] = goal.bagfile
+		modulename = turtle + '_' + time.strftime("%Y%m%d_%H%M%S", time.gmtime())
 		self.filename[turtle] = '/home/r3po/catkin_ws/src/r3po/sandbox/turtlesim/'+ modulename
 
 		goalHandle.set_accepted()
@@ -68,9 +75,13 @@ class TurtleServer:
 									shell=True)
 		self.cancelled[turtle] = False
 		self.executing[turtle] = True
+		self.start_time[turtle] = datetime.now()
+		rospy.loginfo("Running " + modulename + '.py from ' + goal.user_id)
+		rospy.loginfo("Bag file: " + goal.bagfile)
     
 def poll(event):
 	global server
+	terminated = []
 	for turtle in server.executing:
 		if server.executing[turtle]:
 			if server.pm[turtle].poll() is None:
@@ -85,6 +96,29 @@ def poll(event):
 					server.goalHandle[turtle].set_aborted(server.result[turtle])
 				else:
 					server.goalHandle[turtle].set_succeeded(server.result[turtle])
+				rospy.loginfo("Terminated " + server.result[turtle].name + '.py from ' + server.user_id[turtle])
+				terminated.append(turtle)
+				# Insert into DB
+				cnx = mysql.connector.connect(user='r3po', password='ti2113dl',host='localhost',database='r3po')
+				cursor = cnx.cursor()
+				add_run = ("INSERT INTO run "
+						"(user_id, script_file, output_file, bag_file, start_time, end_time) "
+						"VALUES (%s, %s, %s, %s, %s, %s)")
+				data_run = (server.user_id[turtle], 
+							server.filename[turtle]+'.py',
+							server.filename[turtle]+'.output',
+							server.bagfile[turtle], 
+							server.start_time[turtle],
+							datetime.now())
+				# Insert new run
+				cursor.execute(add_run, data_run)
+				# Make sure data is committed to the database
+				cnx.commit()
+				cursor.close()
+				cnx.close()
+
+	for turtle in terminated:
+		server.executing.pop(turtle,None)
 
 if __name__ == '__main__':
 	global server
