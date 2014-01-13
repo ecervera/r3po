@@ -99,7 +99,7 @@ def poll(event):
 				rospy.loginfo("Terminated " + server.result[turtle].name + '.py from ' + server.user_id[turtle])
 				terminated.append(turtle)
 				# Insert into DB
-				cnx = mysql.connector.connect(user='r3po', password='ti2113dl',host='localhost',database='r3po')
+				cnx = mysql.connector.connect(user='r3po', password='ti2113dl',host='10.1.230.114',database='r3po')
 				cursor = cnx.cursor()
 				add_run = ("INSERT INTO run "
 						"(user_id, script_file, output_file, bag_file, start_time, end_time) "
