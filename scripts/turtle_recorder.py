@@ -19,7 +19,7 @@ def handle_start(req):
     turtle = req.name
     modulename = turtle + '_' + time.strftime("%Y%m%d_%H%M%S", time.gmtime())
     filename = '/home/r3po/catkin_ws/src/r3po/sandbox/turtlesim/'+ modulename + '.bag'
-    rosbag_proc[turtle] = subprocess.Popen(['/opt/ros/groovy/bin/rosbag','record','rosout',turtle+'/command_velocity',turtle+'/pose',turtle+'/pen','--duration', '1800', '-O',filename])
+    rosbag_proc[turtle] = subprocess.Popen(['/opt/ros/groovy/bin/rosbag','record','rosout',turtle+'/command_velocity',turtle+'/pose',turtle+'/pen','--duration', '3600', '-O',filename])
     return TurtleStartRecordResponse(0,filename)
 
 def handle_stop(req):
