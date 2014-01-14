@@ -15,15 +15,15 @@ def terminate_process_and_children(p):
     p.terminate()
 
 def handle_start(req):
-    print "Start recording " + req.name
+    rospy.loginfo("Start recording " + req.name)
     bot = req.name
     modulename = bot + '_' + time.strftime("%Y%m%d_%H%M%S", time.gmtime())
     filename = '/home/r3po/catkin_ws/src/r3po/sandbox/stage/'+ modulename + '.bag'
     rosbag_proc[bot] = subprocess.Popen(['/opt/ros/groovy/bin/rosbag','record','rosout',bot+'/base_pose_ground_truth',bot+'/pose',bot+'/base_scan',bot+'/cmd_vel',bot+'/odom','--duration', '1800', '-O',filename])
-    return 0
+    return BotStartRecordResponse(0,filename)
 
 def handle_stop(req):
-    print "Stop recording " + req.name
+    rospy.loginfo("Stop recording " + req.name)
     bot = req.name 
     terminate_process_and_children(rosbag_proc[bot])
     return 0
@@ -33,7 +33,6 @@ def stage_recorder():
     rospy.init_node('stage_recorder')
     sr = rospy.Service('~start', BotStartRecord, handle_start)
     sp = rospy.Service('~stop', BotStopRecord, handle_stop)
-    print "Ready for requests."
     rosbag_proc = {}
     rospy.spin()
 
