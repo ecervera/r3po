@@ -37,9 +37,11 @@ gsh -c turtle_recorder rosrun r3po turtle_recorder.py
 sleep 1
 gsh -c stage_nodes roslaunch r3po stage_nodes.launch
 sleep 1
-gsh -c nao_driver roslaunch r3po nao_driver_sim.py
+gsh -c nao_driver roslaunch r3po nao_driver_sim.launch
+# export NAO_IP=10.1.230.102
+# export PYTHONPATH=/home/r3po/pynaoqi-python-2.7-naoqi-1.14-linux64/:$PYTHONPATH
 sleep 1
-gsh -c nao_camera rosrun r3po nao_camera.py
+gsh -c nao_camera roslaunch r3po nao_camera.launch
 #sleep 1
 #gsh -c turtle_server rosrun r3po turtle_server.py
 #sleep 1
@@ -48,10 +50,11 @@ gsh -c nao_camera rosrun r3po nao_camera.py
 #gsh -c nao_server rosrun r3po nao_server.py
 sleep 1
 gsh -c turtle_server ssh r3po@10.1.230.115
+# rosrun r3po turtle_server.py
 sleep 1
-gsh -c turtle_server ssh r3po@10.1.230.115
+gsh -c stage_server ssh r3po@10.1.230.115
+# rosrun r3po stage_server.py
 sleep 1
-gsh -c turtle_server ssh r3po@10.1.230.115
-
-
+gsh -c nao_server ssh r3po@10.1.230.115
+# rosrun r3po nao_server.py
 
