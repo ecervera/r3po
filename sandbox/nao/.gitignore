@@ -1,3 +1,7 @@
 *.bag
+<<<<<<< HEAD
+=======
+*.bag.active
+>>>>>>> develop
 *.output
 *.py

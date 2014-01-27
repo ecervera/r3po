@@ -11,7 +11,7 @@ def dice():
 	return random.randint(1,6)
 
 Heads = 0
-Tails = 0
+Tails = 1
 
 def coin():
 	return random.choice([Heads,Tails])
