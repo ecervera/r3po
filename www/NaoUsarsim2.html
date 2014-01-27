@@ -45,7 +45,7 @@
       host : 'robotprogramming.uji.es',
       width : 320,
       height : 240,
-      topic : '/nao_camera/image_raw'
+      topic : '/nao2/nao_camera/image_raw'
     });
 
 	var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("moduleCode"),{
@@ -130,8 +130,8 @@ import rospy
 
 from geometry_msgs.msg import Twist
 
-rospy.init_node('nao_walk')
-nao_pub = rospy.Publisher('/cmd_vel',Twist)
+rospy.init_node('nao2_walk')
+nao_pub = rospy.Publisher('/nao2/cmd_vel',Twist)
 rospy.sleep(1.0)
 
 vel = Twist()
