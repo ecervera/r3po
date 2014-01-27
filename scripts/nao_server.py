@@ -23,9 +23,9 @@ def change_user():
 	#os.setuid(65534)
 	pass
 
-class StageServer:
+class NaoServer:
 	def __init__(self):
-		self.server = actionlib.ActionServer('stage_run_script', RunScriptAction, self.execute, self.cancel, False)
+		self.server = actionlib.ActionServer('nao_run_script', RunScriptAction, self.execute, self.cancel, False)
 		self.goalHandle = {}
 		self.goal = {}
 		self.pm = {}
@@ -52,7 +52,7 @@ class StageServer:
 		self.user_id[bot] = goal.user_id
                 self.bagfile[bot] = goal.bagfile
 		modulename = goal.name + '_' + time.strftime("%Y%m%d_%H%M%S", time.gmtime())
-		self.filename[bot] = '/home/r3po/catkin_ws/src/r3po/sandbox/stage/'+ modulename
+		self.filename[bot] = '/home/r3po/catkin_ws/src/r3po/sandbox/nao/'+ modulename
 
 		goalHandle.set_accepted()
 		
@@ -66,7 +66,7 @@ class StageServer:
 		my_env = os.environ
 		my_env["ROS_NAMESPACE"] = bot
 		with open(self.filename[bot]+'.output', "w") as text_file:
-			self.pm[bot] = subprocess.Popen('rosrun r3po sandbox/stage/' + modulename+'.py',
+			self.pm[bot] = subprocess.Popen('rosrun r3po sandbox/nao/' + modulename+'.py',
 									stdout=text_file,
 									stderr=subprocess.STDOUT,
 									preexec_fn=change_user,
@@ -103,8 +103,8 @@ def poll(event):
 
 if __name__ == '__main__':
 	global server
-	rospy.init_node('stage_server')
-	rospy.loginfo("Starting stage_server...")
-	server = StageServer()
+	rospy.init_node('nao_server')
+	rospy.loginfo("Starting nao_server...")
+	server = NaoServer()
 	rospy.Timer(rospy.Duration(0.2), poll)
 	rospy.spin()
