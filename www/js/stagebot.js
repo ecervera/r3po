@@ -77,6 +77,7 @@ var StageBot = (function() {
 			var imageHeight = 0.25/mpix;
 			this.context.translate(x, y);
 			this.context.rotate(-this.th);
+			if($("#dispData").is(':checked')){
 			if (this.ranger!=null) {
 				var ctx = this.context;
 				for (var i=0;i<12;i++) {
@@ -88,6 +89,7 @@ var StageBot = (function() {
 					ctx.lineTo(Math.sin(i*Math.PI/6+Math.PI/36)*this.ranger[i]/mpix,Math.cos(i*Math.PI/6+Math.PI/36)*this.ranger[i]/mpix);
 					ctx.fill();
 				}
+			}
 			}
 			this.context.drawImage(
 				this.image,
