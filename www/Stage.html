@@ -115,6 +115,7 @@
 		$( "#moduleStop" ).button();
 		$( "#moduleStop" ).button('disable');
 		$( "#dispData" ).button();
+		$( "#dispTrail" ).button();
 		
 		$( "#moduleStop" ).on( "click", function( event, ui ) {
 			runningGoal.cancel();
@@ -182,7 +183,8 @@ stop()
 	</tr>
 	<tr>
 		<td align="center">
-			<input type="checkbox" id="dispData"><label for="dispData">Data</label>
+			<input type="checkbox" id="dispData" checked="checked"><label for="dispData">Data</label>
+			<input type="checkbox" id="dispTrail"><label for="dispTrail">Trail</label>
 			<div id="moduleRun">Run</div>
 			<div id="moduleStop">Stop</div>
 		</td>

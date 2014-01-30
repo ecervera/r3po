@@ -50,6 +50,11 @@ var StageBot = (function() {
 					that.trailX.push(that.x);
 					that.trailY.push(that.y);					
 					that.trailTH.push(that.th);
+					if (that.trailX.length>50) {
+						that.trailX.shift();
+						that.trailY.shift();
+						that.trailTH.shift();
+					}
 				}
 			}
 			that.draw();
@@ -68,13 +73,32 @@ var StageBot = (function() {
 		var scale = cw/bw;
 		
 		var mpix = 0.0145/scale; // meters per pixel
+		var imageWidth  = 0.25/mpix;
+		var imageHeight = 0.25/mpix;
+		
+		if($("#dispTrail").is(':checked')){
+			for (var i=0;i<this.trailX.length-1;i++) {
+				x = -this.trailY[i] / mpix + cw/2;
+				y = -this.trailX[i] / mpix + cw/2;
+				this.context.save();
+				this.context.globalAlpha = i/this.trailX.length/2;
+				this.context.translate(x,y);
+				this.context.rotate(-this.trailTH[i]);
+				this.context.drawImage(
+					this.image,
+					-(imageWidth / 2),
+					-(imageHeight / 2),
+					imageWidth,
+					imageHeight
+				);
+				this.context.restore();
+			}	
+		}
+		this.context.globalAlpha = 1.0;
+		this.context.save();
 		var x = -this.y / mpix + cw/2;
 		var y = -this.x / mpix + cw/2;
-		
-		this.context.save();
-		if ((x!=null)&&(x!=null)) {
-			var imageWidth  = 0.25/mpix;
-			var imageHeight = 0.25/mpix;
+		if ((x!=null)&&(y!=null)) {
 			this.context.translate(x, y);
 			this.context.rotate(-this.th);
 			if($("#dispData").is(':checked')){
