@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import rospy
+import rospy, math
 
 from geometry_msgs.msg import Twist 
 
@@ -19,10 +19,14 @@ def loginfo(s=''):
 def display(s=''):
 	loginfo(s)
 
-def forward(v=1.0):
+def move(v=1.0,w=0.0):
 	twist = Twist()
 	twist.linear.x = v
-	cmd_vel_publisher.publish(vel)
+	twist.angular.z = math.radians(w)
+	cmd_vel_publisher.publish(twist)
+
+def forward(v=1.0):
+	move(v,0.0)
 
 def fd(v=1.0):
 	forward(v)
@@ -33,33 +37,21 @@ def backward(v=1.0):
 def bk(v=1.0):
 	backward(v)
     
-def turn(a=-90.0,t=1.0):
-	vel.linear = 0.0
-	vel.angular = math.radians(a)
-	turtle_vel.publish(vel)
-	sleep(t)
+def stop():
+	forward(0.0)
+
+def turn(w=-90.0):
+	move(0.0,w)
     
-def right(a=90.0,t=1.0):
-	turn(-a,t)
+def right(w=90.0):
+	turn(-w)
 
-def rt(a=90.0,t=1.0):
-	right(a,t)
+def rt(w=90.0):
+	right(w)
 
-def left(a=90.0,t=1.0):
-	turn(a,t)
+def left(w=90.0):
+	turn(w)
 
-def lt(a=90.0,t=1.0):
-	left(a,t)
+def lt(w=90.0):
+	left(w)
 
-def rightArc(a=90.0,r=1.0,t=1.0):
-	vel.linear = math.radians(a) * r
-	vel.angular = -math.radians(a)
-	turtle_vel.publish(vel)
-	sleep(t)
-	
-def leftArc(a=90.0,r=1.0,t=1.0):
-	vel.linear = math.radians(a) * r
-	vel.angular = math.radians(a)
-	turtle_vel.publish(vel)
-	sleep(t)
-	

@@ -165,22 +165,16 @@
 		<td bgcolor="#ffffff" >
 <textarea  rows="40" cols="50" id="moduleCode">
 #!/usr/bin/env python
+from rpn.stage import *
+start()
 
-import rospy
-
-from geometry_msgs.msg import Twist
-rospy.init_node('robot_mover',anonymous=True)
-
-pub = rospy.Publisher('cmd_vel', Twist)
-rospy.sleep(0.1)
-
-twist = Twist()
-twist.linear.x = 1.0  
-twist.angular.z = 0.0
+# Write your commands here
 
 for i in range(10):
-	pub.publish(twist)
-	rospy.sleep(0.1)
+	forward()
+	sleep(0.1)
+
+stop()
 
 </textarea>
 		</td>
