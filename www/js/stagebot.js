@@ -45,8 +45,8 @@ var StageBot = (function() {
 				that.trailY.push(that.y);
 				that.trailTH.push(that.th);
 			} else {
-				var lastPos = that.trailX.length - 1;
-				if (that.x!=that.trailX[lastPos] || that.y!=that.trailY[lastPos] || that.th!=that.trailTH[lastPos]) {
+				//var lastPos = that.trailX.length - 1;
+				//if (that.x!=that.trailX[lastPos] || that.y!=that.trailY[lastPos] || that.th!=that.trailTH[lastPos]) {
 					that.trailX.push(that.x);
 					that.trailY.push(that.y);					
 					that.trailTH.push(that.th);
@@ -55,7 +55,7 @@ var StageBot = (function() {
 						that.trailY.shift();
 						that.trailTH.shift();
 					}
-				}
+				//}
 			}
 			that.draw();
 			//console.log('x:'+that.x+ ' y:'+that.y);
@@ -78,6 +78,7 @@ var StageBot = (function() {
 		
 		if($("#dispTrail").is(':checked')){
 			for (var i=0;i<this.trailX.length-1;i++) {
+			    if (this.trailX[i]!=this.trailX[i+1] || this.trailY[i]!=this.trailY[i+1] || this.trailTH[i]!=this.trailTH[i+1]) {
 				x = -this.trailY[i] / mpix + cw/2;
 				y = -this.trailX[i] / mpix + cw/2;
 				this.context.save();
@@ -92,6 +93,7 @@ var StageBot = (function() {
 					imageHeight
 				);
 				this.context.restore();
+			    }
 			}	
 		}
 		this.context.globalAlpha = 1.0;
