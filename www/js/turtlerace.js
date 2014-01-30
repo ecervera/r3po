@@ -83,9 +83,10 @@ var Turtle = (function() {
 		}
 			that.draw();
 			//console.log('x:'+that.x+ ' y:'+that.y);
-			if (that.x>=266 && that.y<=49 && !that.offpath) {
+			if (that.x>=262 && that.y<=79 && !that.offpath) {
 				that.finish = true;
-				//$( "div#turtleGoal" ).text('Congratulations, you did it!!!');
+				$( "div#turtleGoal" ).text('Congratulations, you did it!!!');
+				stopChr();
 			}
 		});
   };
