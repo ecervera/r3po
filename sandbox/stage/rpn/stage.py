@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import rospy, math
+import rospy
 
 from geometry_msgs.msg import Twist 
 from sensor_msgs.msg import LaserScan
@@ -32,10 +32,10 @@ def start():
 	rospy.Subscriber("odom", Odometry, callback_odom)
 	sleep(1.0)
 
-def move(v=1.0,w=0.0):
+def move(v,w):
 	twist = Twist()
 	twist.linear.x = v
-	twist.angular.z = math.radians(w)
+	twist.angular.z = w
 	cmd_vel_publisher.publish(twist)
 
 def getPosition():
@@ -57,33 +57,33 @@ LEFT = 9
 LEFT_BACK = 10
 BACK_LEFT = 11
 
-def forward(v=1.0):
+def forward(v):
 	move(v,0.0)
 
-def fd(v=1.0):
+def fd(v):
 	forward(v)
 
-def backward(v=1.0):
+def backward(v):
 	forward(-v)
 
-def bk(v=1.0):
+def bk(v):
 	backward(v)
     
 def stop():
 	forward(0.0)
 
-def turn(w=-90.0):
+def turn(w):
 	move(0.0,w)
     
-def right(w=90.0):
+def right(w):
 	turn(-w)
 
-def rt(w=90.0):
+def rt(w):
 	right(w)
 
-def left(w=90.0):
+def left(w):
 	turn(w)
 
-def lt(w=90.0):
+def lt(w):
 	left(w)
 
