@@ -119,6 +119,8 @@
 		rosoutSubscriber.subscribe(function(message) {
 			if (message.name.indexOf(botName+'/stage_controller') != -1) {
 				document.getElementById("moduleOutput").value += message.msg;
+				var textarea = document.getElementById('moduleOutput');
+				textarea.scrollTop = textarea.scrollHeight;
 			}
 		} );
 		$( "#moduleRun" ).button();
@@ -149,14 +151,19 @@
 				for(var i=0;i<outputLines.length;i++) {
 					if (outputLines[i].indexOf('WallTime') == -1) {
 						if (outputLines[i].indexOf('catkin_ws') == -1) {
+							if (outputLines[i].length>0) {
 							document.getElementById("moduleOutput").value += outputLines[i] + '\n';
+							var textarea = document.getElementById('moduleOutput');
+							textarea.scrollTop = textarea.scrollHeight;
+							}
 						} else {
 							line = outputLines[i].split('line');
 							document.getElementById("moduleOutput").value += 'Line ' + line[1] + '\n';
+							var textarea = document.getElementById('moduleOutput');
+							textarea.scrollTop = textarea.scrollHeight;
 						}
 					}
 				}
-				//document.getElementById("moduleOutput").value += result.output;
 				$( "#moduleRun" ).button('enable');
 				$( "#moduleStop" ).button('disable');
 			});
@@ -194,8 +201,8 @@ start()
 # Write your commands here
 
 for i in range(10):
-	forward(1)
-	sleep(0.1)
+    forward(1)
+    sleep(0.1)
 
 stop()
 
