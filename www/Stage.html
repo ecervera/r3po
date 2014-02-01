@@ -147,8 +147,13 @@
 				var filename = result.name
 				var outputLines = result.output.split(/\r?\n/);
 				for(var i=0;i<outputLines.length;i++) {
-					if (outputLines[i].indexOf('Walltime') != -1) {
-						document.getElementById("moduleOutput").value += outputLines[i] + '\n';
+					if (outputLines[i].indexOf('WallTime') == -1) {
+						if (outputLines[i].indexOf('catkin_ws') == -1) {
+							document.getElementById("moduleOutput").value += outputLines[i] + '\n';
+						} else {
+							line = outputLines[i].split('line');
+							document.getElementById("moduleOutput").value += 'Line ' + line[1] + '\n';
+						}
 					}
 				}
 				//document.getElementById("moduleOutput").value += result.output;
