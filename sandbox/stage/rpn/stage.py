@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+import math
 
 from geometry_msgs.msg import Twist 
 from sensor_msgs.msg import LaserScan
@@ -44,6 +45,14 @@ def getPosition():
 
 def getOrientation():
 	return odom_pose_pose_orientation
+
+def getPose():
+	position = odom_pose_pose_position
+	orientation = odom_pose_pose_orientation
+	x = position.x
+	y = position.y
+	th = 2*math.atan2(orientation.z,orientation.w)
+	return (x,y,th)
 
 def getRanges():
 	return base_scan_ranges
