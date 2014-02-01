@@ -29,7 +29,8 @@ def start():
 	rospy.init_node('stage_controller', anonymous=True)
 	cmd_vel_publisher = rospy.Publisher('cmd_vel', Twist)
 	rospy.Subscriber("base_scan", LaserScan, callback_base_scan)
-	rospy.Subscriber("odom", Odometry, callback_odom)
+	#rospy.Subscriber("odom", Odometry, callback_odom)
+	rospy.Subscriber("base_pose_ground_truth", Odometry, callback_odom)
 	sleep(1.0)
 
 def move(v,w):
@@ -40,6 +41,9 @@ def move(v,w):
 
 def getPosition():
 	return odom_pose_pose_position
+
+def getOrientation():
+	return odom_pose_pose_orientation
 
 def getRanges():
 	return base_scan_ranges
