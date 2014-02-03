@@ -28,5 +28,6 @@ floorplan
   pose [0.000 0.000 0.000 0.000]
 )
 
-erratic( pose [ -1.000 -1.000 0.000 90.000 ] name "era" color "blue")
+erratic( pose [ 0.000 0.000 0.000 90.000 ] name "era" color "blue")
+
 

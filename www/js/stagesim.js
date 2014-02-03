@@ -6,7 +6,8 @@ var StageSim = (function() {
 		that.ros     = options.ros;
 		that.context = options.context;
 		that.background = new Image();
-		that.background.src = options.background
+		that.background.src = options.background;
+		that.mpix = options.mpix;
 		that.bot  = null;
 		//that.draw();
 	};
@@ -17,7 +18,8 @@ var StageSim = (function() {
 			name    : name,
 			ros     : that.ros,
 			context : that.context,
-			background : that.background
+			background : that.background,
+			mpix : that.mpix
 		});
 	};
 

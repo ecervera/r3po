@@ -25,6 +25,7 @@
 	}
 
 	var user_id = getURLParameter('user_id');
+	var world = getURLParameter('world');
 
 	var rosURL = 'ws://'+location.hostname+':9090';
 	var botName = '';
@@ -55,10 +56,15 @@
 	$(document).ready(function(){
 		var context = document.getElementById('world').getContext('2d');
 		
+		var mpix = 10 / 689;
+		if (world=='circular_maze'){
+			mpix = 15 / 689;
+		}
 		var stageSim = new StageSim({
 			ros     : ros,
 			context : context,
-			background : 'images/lab.png'
+			background : 'images/'+world+'.png',
+			mpix : mpix
 		});
 
 		var spawnBot = new ROSLIB.Service({
@@ -68,16 +74,13 @@
 		});
 	
 		var request = new ROSLIB.ServiceRequest({
+			world : world
 		});
 	
 		spawnBot.callService(request, function(result){
 			botName = result.name;
 			
-			if (!botName.length) {
-				$( "div#botAcquired" ).text('No available robot, please come back in a few minutes...');
-			}
 			stageSim.spawnBot(botName);
-			$( "div#botAcquired" ).text('Controlling robot '+botName);
 			
 			var startBotRecord = new ROSLIB.Service({
 				ros : ros,
@@ -94,7 +97,8 @@
 		var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("moduleCode"),{
 			lineNumbers : true
 		});
-		
+		myCodeMirror.setSize(null,600);
+
 		$('.CodeMirror').resizable({
 			resize: function() {
 				myCodeMirror.setSize("100%", Math.max(248,$(this).height()));
@@ -193,7 +197,7 @@
 			<canvas id="world" width="600" height="600" style="border: 0px"></canvas>
 		</td>
 		<td bgcolor="#ffffff" >
-<textarea  rows="40" cols="50" id="moduleCode">
+<textarea  rows="60" cols="50" id="moduleCode">
 #!/usr/bin/env python
 from rpn.stage import *
 start()
@@ -222,7 +226,7 @@ stop()
 	</tr>
 	<tr>
 		<td align="center">
-			<div id="botAcquired"></div>
+			
 		</td>
 		<td align="center">
 			<div id="clearOutput">Clear output</div>

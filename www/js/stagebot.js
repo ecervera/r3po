@@ -7,6 +7,7 @@ var StageBot = (function() {
 		that.name    = options.name;
 		that.context = options.context;
 		that.background = options.background;
+		that.mpix = options.mpix;
 		that.x = null;
 		that.y = null;
 		that.th = null;
@@ -72,7 +73,7 @@ var StageBot = (function() {
 		this.context.drawImage(this.background,0,cw*(1-ratio)/2,cw,cw*ratio);
 		var scale = cw/bw;
 		
-		var mpix = 0.0145/scale; // meters per pixel
+		var mpix = this.mpix/scale;
 		var imageWidth  = 0.25/mpix;
 		var imageHeight = 0.25/mpix;
 		
