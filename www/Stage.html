@@ -82,7 +82,7 @@
 		spawnBot.callService(request, function(result){
 			botName = result.name;
 			
-			stageSim.spawnBot(botName);
+			stageSim.spawnBot(botName,'bot.png');
 			
 			var startBotRecord = new ROSLIB.Service({
 				ros : ros,
