@@ -100,3 +100,51 @@ def left(w):
 def lt(w):
 	left(w)
 
+class Robot:
+	def __init__(self,name):
+		self.name = name
+	def callback_base_scan(self,data):
+		self.base_scan_ranges = data.ranges
+
+	def callback_odom(self,data):
+		self.odom_pose_pose_position = data.pose.pose.position
+		self.odom_pose_pose_orientation = data.pose.pose.orientation
+
+	def start(self):
+		self.cmd_vel_publisher = rospy.Publisher(self.name+'/cmd_vel', Twist)
+		rospy.Subscriber(self.name+"/base_scan", LaserScan, self.callback_base_scan)
+		rospy.Subscriber(self.name+"/base_pose_ground_truth", Odometry, self.callback_odom)
+
+	def move(self,v,w):
+		twist = Twist()
+		twist.linear.x = v
+		twist.angular.z = w
+		self.cmd_vel_publisher.publish(twist)
+
+	def stop(self):
+		self.move(0,0)
+
+	def getPose(self):
+		position = self.odom_pose_pose_position
+		orientation = self.odom_pose_pose_orientation
+		x = position.x
+		y = position.y
+		th = 2*math.atan2(orientation.z,orientation.w)
+		return (x,y,th)
+
+	def getRanges(self):
+		return self.base_scan_ranges
+
+robot_0 = Robot('robot_0')
+robot_1 = Robot('robot_1')
+robot_2 = Robot('robot_2')
+
+def start_multi():
+	global robot_0, robot_1, robot_2
+	rospy.init_node('stage_controller', anonymous=True)
+	robot_0.start()
+	robot_1.start()
+	robot_2.start()
+	sleep(1.0)
+
+

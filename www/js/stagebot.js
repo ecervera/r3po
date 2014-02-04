@@ -7,6 +7,8 @@ var StageBot = (function() {
 		that.name    = options.name;
 		that.context = options.context;
 		that.background = options.background;
+		that.sim = options.sim;
+		that.index = options.index;
 		that.mpix = options.mpix;
 		that.x = null;
 		that.y = null;
@@ -16,7 +18,7 @@ var StageBot = (function() {
 		that.trailY = new Array();
 		that.trailTH = new Array();
 		that.image = new Image();
-		that.image.src = 'images/bot.png';
+		that.image.src = 'images/'+options.image;
 		that.draw();
 
 		that.rangerListener = new ROSLIB.Topic({
@@ -58,19 +60,21 @@ var StageBot = (function() {
 					}
 				//}
 			}
-			that.draw();
+			if (that.index==0) {
+				that.sim.draw();
+			}
 			//console.log('x:'+that.x+ ' y:'+that.y);
 		});
 	};
 	
 	StageBot.prototype.draw = function() {
 		
-		this.context.clearRect(0,0,this.context.canvas.width,this.context.canvas.height);
+		//this.context.clearRect(0,0,this.context.canvas.width,this.context.canvas.height);
 		var bw = this.background.width;
 		var bh = this.background.height;
 		var cw = this.context.canvas.width; // square canvas, width=height
 		var ratio = bh/bw;
-		this.context.drawImage(this.background,0,cw*(1-ratio)/2,cw,cw*ratio);
+		//this.context.drawImage(this.background,0,cw*(1-ratio)/2,cw,cw*ratio);
 		var scale = cw/bw;
 		
 		var mpix = this.mpix/scale;
