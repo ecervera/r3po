@@ -45,7 +45,7 @@
       host : 'robotprogramming.uji.es',
       width : 320,
       height : 240,
-      topic : '/nao1/nao_camera/image_raw'
+      topic : '/freezer/nao_camera/image_raw'
     });
 
 	var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("moduleCode"),{
@@ -125,15 +125,23 @@
 			<td bgcolor="#000000" >
 				<textarea  rows="40" cols="50" id="moduleCode">
 #!/usr/bin/env python
-from rpn.nao import *
-start()
 
-# Write your commands here
+import rospy
 
-move(1,0)
-sleep(2)
+from nao_msgs.msg import JointAnglesWithSpeed 
 
-stop()
+rospy.init_node('nao_chef',anonymous=True)
+nao_angles = rospy.Publisher('freezer/joint_angles',JointAnglesWithSpeed)
+rospy.sleep(1.0)
+
+msg = JointAnglesWithSpeed()
+msg.joint_names = ['HeadPitch','HeadYaw']
+msg.joint_angles = [0.0, 0.0]
+msg.speed = 0.1
+msg.relative = 1
+
+nao_angles.publish(msg)
+rospy.sleep(1.0)
 
 </textarea>
 			</td>
