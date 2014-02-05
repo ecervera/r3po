@@ -2,9 +2,9 @@
 <launch>
   <env name="PYTHONPATH" value="$(env PYTHONPATH)" /> 
 
-  <arg name="nao_ip" default="$(optenv NAO_IP 10.1.230.26)" />
+  <arg name="nao_ip" default="$(optenv NAO_IP 10.1.230.22)" />
   <arg name="nao_port" default="$(optenv NAO_PORT 9559)" />
-  <node pkg="nao_driver" type="nao_camera.py" name="nao_camera" required="true" args="--pip=$(arg nao_ip) --pport=$(arg nao_port)" output="screen" ns="nao1">
+  <node pkg="nao_driver" type="nao_camera.py" name="nao_camera" required="true" args="--pip=$(arg nao_ip) --pport=$(arg nao_port)" output="screen" ns="freezer">
      <param name="calibration_file_bottom" type="string" value="file://$(find nao_driver)/config/nao_bottom_640x480.yaml"/>
      <param name="calibration_file_top" type="string" value="file://$(find nao_driver)/config/nao_top_640x480.yaml"/>
      <param name="resolution" type="int" value="1" /> <!--QQVGA=0, QVGA=1, VGA=2 -->
