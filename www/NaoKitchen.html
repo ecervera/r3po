@@ -131,7 +131,7 @@ import rospy
 from nao_msgs.msg import JointAnglesWithSpeed 
 
 rospy.init_node('nao_chef',anonymous=True)
-nao_angles = rospy.Publisher('freezer/joint_angles',JointAnglesWithSpeed)
+nao_angles = rospy.Publisher('/freezer/joint_angles',JointAnglesWithSpeed)
 rospy.sleep(1.0)
 
 msg = JointAnglesWithSpeed()
