@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	
+	<script>
+
+	function getURLParameter(name) {
+                return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+        }
+
+        var user_id = getURLParameter('user_id');
+
+	var rosURL = 'ws://'+location.hostname+':9090';
+	//var scriptsURL = 'http://'+hostIP+'/r3po/scripts/nao/';
+		
+	$(document).ready(function(){
+		
+		var ros = new ROSLIB.Ros({
+			url : rosURL
+		});
+
+    // Create the main viewer.
+    var viewer = new MJPEGCANVAS.Viewer({
+      divID : 'mjpeg',
+      host : 'robotprogramming.uji.es',
+      width : 320,
+      height : 240,
+      topic : '/freezer/nao_camera/image_raw'
+    });
+
+	var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("moduleCode"),{
+		lineNumbers : true
+	});
+	
+	$('.CodeMirror').resizable({
+	  resize: function() {
+	    myCodeMirror.setSize("100%", Math.max(400,$(this).height()));
+	  }
+	});
+	
+	var runscServer  = '/nao_run_script';
+	var runscAction  = '/r3po/RunScriptAction';
+	var runningGoal;
+	
+	var runscClient = new ROSLIB.ActionClient({
+		ros : ros,
+		serverName : runscServer,
+		actionName : runscAction
+	});
+	
+	$( "#moduleRun" ).button();
+	$( "#moduleStop" ).button();
+	$( "#moduleStop" ).button('disable');
+	
+	$( "#moduleStop" ).on( "click", function( event, ui ) {
+		runningGoal.cancel();
+	} );
+	
+	$( "#moduleRun" ).on( "click", function( event, ui ) {
+		$( "#moduleRun" ).button('disable');
+		$( "#moduleStop" ).button('enable');
+		  var goal = new ROSLIB.Goal({
+			actionClient : runscClient,
+			goalMessage : {
+				name : 'naoscript',
+				code : myCodeMirror.getValue(),
+				user_id : user_id
+			}
+		});
+		goal.on('feedback', function(feedback) {});
+		goal.on('result', function(result) {
+			var filename = result.name
+			document.getElementById("moduleOutput").value += result.output;
+			$( "#moduleRun" ).button('enable');
+			$( "#moduleStop" ).button('disable');
+		});
+		goal.send();
+		runningGoal = goal;
+	} );
+	
+	$( "#clearOutput" ).button();
+	$( "#clearOutput" ).on( "click", function( event, ui ) {
+		document.getElementById("moduleOutput").value = ""
+	});
+
+	setInterval(function() {
+	    var myImageElement = document.getElementById('kitchenCam');
+	    myImageElement.src = 'http://robotprogramming.uji.es:8085/cgi-bin/video.jpg?rand=' + Math.random();
+	}, 1000);
+
+});
+
+
+
+	</script>
+</head>
+
+<body>
+	<table>
+		<tr>
+			<td>
+			</td>
+			<td>Python script:
+			</td>
+		</tr>
+		<tr>
+			<td>				
+				<div id="mjpeg"></div>
+				<img src="http://robotprogramming.uji.es:8085/cgi-bin/video.jpg" id="kitchenCam" />
+			</td>
+			<td bgcolor="#000000" >
+				<textarea  rows="40" cols="50" id="moduleCode">
+#!/usr/bin/env python
+from rpn.nao_chef import *
+start()
+
+# Write your commands here
+
+moveHead(0.0,0.0)
+rospy.sleep(1.0)
+
+</textarea>
+			</td>
+		</tr>
+		<tr>
+		<td align="center">
+			<div id="moduleRun">Run</div>
+			<div id="moduleStop">Stop</div>
+		</td>
+		<td >Output:<br>
+			<textarea readonly rows="10" cols="50" style="overflow:auto;resize:vertical" id="moduleOutput"></textarea>
+	</td>
+	</tr>
+	<tr>
+		<td>
+		</td>
+		<td align="center">
+			<div id="clearOutput">Clear output</div>
+		</td>
+	</tr>
+	</table>
+</body>
+
+</html>
