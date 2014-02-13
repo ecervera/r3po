@@ -39,19 +39,22 @@ var StageSim = (function() {
 			var scale = cw/bw;
 			var mpix = this.mpix/scale;
 			var n = 6; // grid lines from -n to n
+			this.context.font = "12px Arial";
+			this.context.strokeStyle = 'rgba(192,192,192,0.8)';
+			this.context.fillStyle = 'rgba(192,192,192,0.8)';
 			for (var x=-n;x<=n;x++) {
 				this.context.beginPath();
 				this.context.moveTo(x/mpix+cw/2,-n/mpix+cw/2);
 				this.context.lineTo(x/mpix+cw/2, n/mpix+cw/2);
-				this.context.strokeStyle = 'rgba(192,192,192,0.5)';
 				this.context.stroke();
+				this.context.fillText((-x).toString(),x/mpix+cw/2+4,cw/2-4);
 			}
 			for (var y=-n;y<=n;y++) {
 				this.context.beginPath();
 				this.context.moveTo(-n/mpix+cw/2, y/mpix+cw/2);
 				this.context.lineTo( n/mpix+cw/2, y/mpix+cw/2);
-				this.context.strokeStyle = 'rgba(192,192,192,0.5)';
 				this.context.stroke();
+				this.context.fillText((-y).toString(),cw/2+4,y/mpix+cw/2-4);
 			}
 		}
  		//this.bot.draw();
