@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" />
+	<link rel="stylesheet" href="./css/codemirror.css">
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+
+	<script src="http://cdn.robotwebtools.org/EaselJS/current/easeljs.min.js"></script>
+	<script src="http://cdn.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+	<script src="http://cdn.robotwebtools.org/mjpegcanvasjs/current/mjpegcanvas.min.js"></script>
+	<script src="http://cdn.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+	<script src="http://cdn.robotwebtools.org/ros2djs/current/ros2d.min.js"></script>
+		
+	<script src="js/codemirror.js"></script>
+	<script src="./mode/python/python.js"></script>
+	
+	<script src="js/Nav2D.js"></script>
+	<script src="js/navigator/Navigator.js"></script>
+	<script src="js/navigator/OccupancyGridClientNav.js"></script>
+	
+	<script>
+
+	function getURLParameter(name) {
+                return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+        }
+
+        var user_id = getURLParameter('user_id');
+
+	var rosURL = 'ws://syrotek.felk.cvut.cz:9090';
+	//var rosURL = 'ws://'+location.hostname+':9090';
+	//var scriptsURL = 'http://'+hostIP+'/r3po/scripts/nao/';
+		
+	$(document).ready(function(){
+	
+		setInterval(function() {
+	    		var myImageElement = document.getElementById('img1');
+	    		myImageElement.src = 'http://syrotek.felk.cvut.cz:3313/?width=320&rand=' + Math.random();
+	    		myImageElement = document.getElementById('img2');
+	    		myImageElement.src = 'http://syrotek.felk.cvut.cz:3314/?width=320&rand=' + Math.random();
+		}, 1000);
+	
+		var ros = new ROSLIB.Ros({
+			url : rosURL
+		});
+
+	var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("moduleCode"),{
+		lineNumbers : true
+	});
+	
+	$('.CodeMirror').resizable({
+	  resize: function() {
+	    myCodeMirror.setSize("100%", Math.max(400,$(this).height()));
+	  }
+	});
+	
+	var runscServer  = '/syr_run_script';
+	var runscAction  = '/r3po/RunScriptAction';
+	var runningGoal;
+	
+	var runscClient = new ROSLIB.ActionClient({
+		ros : ros,
+		serverName : runscServer,
+		actionName : runscAction
+	});
+	
+	$( "#moduleRun" ).button();
+	$( "#moduleStop" ).button();
+	$( "#moduleStop" ).button('disable');
+	
+	$( "#moduleStop" ).on( "click", function( event, ui ) {
+		runningGoal.cancel();
+	} );
+	
+	$( "#moduleRun" ).on( "click", function( event, ui ) {
+		$( "#moduleRun" ).button('disable');
+		$( "#moduleStop" ).button('enable');
+		  var goal = new ROSLIB.Goal({
+			actionClient : runscClient,
+			goalMessage : {
+				name : 'syrscript',
+				code : myCodeMirror.getValue(),
+				user_id : user_id
+			}
+		});
+		goal.on('feedback', function(feedback) {});
+		goal.on('result', function(result) {
+			var filename = result.name
+			document.getElementById("moduleOutput").value += result.output;
+			$( "#moduleRun" ).button('enable');
+			$( "#moduleStop" ).button('disable');
+		});
+		goal.send();
+		runningGoal = goal;
+	} );
+	
+	$( "#clearOutput" ).button();
+	$( "#clearOutput" ).on( "click", function( event, ui ) {
+		document.getElementById("moduleOutput").value = ""
+	});
+
+});
+
+
+
+	</script>
+</head>
+
+<body>
+	<table>
+		<tr>
+			<td>
+			</td>
+			<td>Python script:
+			</td>
+		</tr>
+		<tr>
+			<td>		
+				<img id="img2" src="http://syrotek.felk.cvut.cz:3314/?width=320" /><br>		
+				<img id="img1" src="http://syrotek.felk.cvut.cz:3313/?width=320" />
+			</td>
+			<td bgcolor="#000000" >
+				<textarea  rows="60" cols="50" id="moduleCode">
+#!/usr/bin/env python
+from rpn.syrotek import *
+start()
+
+# Write your commands here
+
+
+</textarea>
+			</td>
+		</tr>
+		<tr>
+		<td align="center">
+			<div id="moduleRun">Run</div>
+			<div id="moduleStop">Stop</div>
+		</td>
+		<td >Output:<br>
+			<textarea readonly rows="10" cols="50" style="overflow:auto;resize:vertical" id="moduleOutput"></textarea>
+	</td>
+	</tr>
+	<tr>
+		<td>
+		</td>
+		<td align="center">
+			<div id="clearOutput">Clear output</div>
+		</td>
+	</tr>
+	</table>
+</body>
+
+</html>
