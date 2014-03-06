@@ -27,11 +27,11 @@ def callback_odom(data):
 
 def start():
 	global cmd_vel_publisher
-	rospy.init_node('stage_controller', anonymous=True)
-	cmd_vel_publisher = rospy.Publisher('cmd_vel', Twist)
-	rospy.Subscriber("base_scan", LaserScan, callback_base_scan)
-	#rospy.Subscriber("odom", Odometry, callback_odom)
-	rospy.Subscriber("base_pose_ground_truth", Odometry, callback_odom)
+	rospy.init_node('syrotek_controller', anonymous=True)
+	cmd_vel_publisher = rospy.Publisher('/syros/base_cmd_vel', Twist)
+	rospy.Subscriber("/syros/laser_laser", LaserScan, callback_base_scan)
+	rospy.Subscriber("/syros/base_odom", Odometry, callback_odom)
+	#rospy.Subscriber("base_pose_ground_truth", Odometry, callback_odom)
 	sleep(1.0)
 
 def move(v,w):
