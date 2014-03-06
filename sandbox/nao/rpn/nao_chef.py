@@ -5,14 +5,22 @@ import rospy, actionlib
 from nao_msgs.msg import RunBehaviorAction, RunBehaviorGoal, JointAnglesWithSpeed
 
 from geometry_msgs.msg import Twist
+from std_msgs.msg import String
+
+from naoqi import ALProxy
+
+def laugh():
+	aup = ALProxy("ALAudioPlayer","10.1.230.32",9559)
+	aup.playFile("/home/nao/sounds/woody-woodpecker-laugh.mp3")
 
 def sleep(t=1.0):
 	rospy.sleep(t)
 
 def start():
-	global nao_cmd_vel, nao_action_client, nao_angles
+	global nao_cmd_vel, nao_action_client, nao_angles, nao_speech
 	rospy.init_node('nao_chef', anonymous=True)
 	nao_cmd_vel = rospy.Publisher('/freezer/cmd_vel', Twist)
+	nao_speech = rospy.Publisher('/freezer/speech', String)
 	nao_angles = rospy.Publisher('/freezer/joint_angles',JointAnglesWithSpeed)
 	nao_action_client = actionlib.SimpleActionClient('/freezer/run_behavior', RunBehaviorAction)
 	nao_action_client.wait_for_server()
@@ -20,6 +28,12 @@ def start():
 
 def loginfo(s=''):
 	rospy.loginfo(s)
+
+def talk(text):
+	global nao_speech
+	msg = String()
+	msg.data = text
+	nao_speech.publish(msg)
 
 def moveHead(pitch,yaw,speed=0.1,relative=1):
 	global nao_angles
