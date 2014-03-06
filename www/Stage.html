@@ -132,6 +132,7 @@
 		$( "#moduleRun" ).button();
 		$( "#moduleStop" ).button();
 		$( "#moduleStop" ).button('disable');
+		$( "#dispGrid" ).button();
 		$( "#dispData" ).button();
 		$( "#dispTrail" ).button();
 		
@@ -217,7 +218,8 @@ stop()
 	</tr>
 	<tr>
 		<td align="center">
-			<input type="checkbox" id="dispData" checked="checked"><label for="dispData">Data</label>
+			<input type="checkbox" id="dispGrid" checked="checked"><label for="dispGrid">Grid</label>
+			<input type="checkbox" id="dispData"><label for="dispData">Data</label>
 			<input type="checkbox" id="dispTrail"><label for="dispTrail">Trail</label>
 			<div id="moduleRun">Run</div>
 			<div id="moduleStop">Stop</div>

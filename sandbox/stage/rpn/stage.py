@@ -40,6 +40,13 @@ def move(v,w):
 	twist.angular.z = w
 	cmd_vel_publisher.publish(twist)
 
+def moveXY(vx,vy,w):
+	twist = Twist()
+	twist.linear.x = vx
+	twist.linear.y = vy
+	twist.angular.z = w
+	cmd_vel_publisher.publish(twist)
+
 def getPosition():
 	return odom_pose_pose_position
 
